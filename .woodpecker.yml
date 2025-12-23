@@ -1,0 +1,40 @@
+when:
+  - event: [push, manual]
+
+workspace:
+  base: /main
+  path: src
+
+steps:
+  - name: build
+    image: docker:dind
+    commands:
+      - apk add make git
+      - make build
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  - name: test
+    image: docker:dind
+    commands:
+      - apk add make git
+      - make test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      - evaluate: 'MODE_LOCAL != "true"'      
+
+  - name: docker-push
+    image: docker:dind
+    environment:
+      DOCKER_USERNAME:
+        from_secret: docker_username
+      DOCKER_PASSWORD:
+        from_secret: docker_password
+    commands:
+      - apk add make git
+      - make push
+    volumes: 
+      - /var/run:/var/run      
+    when:
+      - evaluate: 'MODE_LOCAL != "true"'

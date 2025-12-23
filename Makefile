@@ -3,6 +3,10 @@ SHELL = /bin/sh
 .PHONY: help
 .DEFAULT_GOAL := help
 
+ifeq ($(MODE_LOCAL),true)
+	GIT_CONFIG_GLOBAL := $(shell git config --global --add safe.directory /main/src > /dev/null)
+endif
+
 # Tools Version
 BATS_VERSION		:= 1.12.0
 CST_VERSION			:= 1.19.3
@@ -26,8 +30,8 @@ AUTHOR             := $(firstword $(subst @, ,$(shell git show --format="%aE" $(
 # Docker parameters
 ROOT_FOLDER=$(shell pwd)
 NS ?= pfillion
-IMAGE_NAME ?= drone-dind
-CONTAINER_NAME ?= drone-dind
+IMAGE_NAME ?= dind
+CONTAINER_NAME ?= dind
 CONTAINER_INSTANCE ?= default
 
 help: ## Show the Makefile help.
@@ -81,10 +85,13 @@ test: ## Run all tests
 		--rm \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(ROOT_FOLDER)/tests:/tests \
-		gcr.io/gcp-runtimes/container-structure-test:latest \
+		ghcr.io/googlecontainertools/container-structure-test:$(CST_VERSION) \
 			test \
 			--image $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MICRO) \
 			--config /tests/config.yaml
+
+test-ci: ## Run CI pipeline locally
+	woodpecker-cli exec --local --repo-trusted-volumes=true --env=MODE_LOCAL=true			
 
 release: build push ## Build and push the image to a registry
 
