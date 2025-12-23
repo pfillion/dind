@@ -23,7 +23,7 @@ steps:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  - name: docker-push
+  - name: push
     image: docker:dind
     environment:
       DOCKER_USERNAME:
