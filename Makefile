@@ -81,14 +81,9 @@ stop: ## Stop the container
 	$(docker_stop)
 
 test: ## Run all tests
-	docker run \
-		--rm \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $(ROOT_FOLDER)/tests:/tests \
-		ghcr.io/googlecontainertools/container-structure-test:$(CST_VERSION) \
-			test \
-			--image $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MICRO) \
-			--config /tests/config.yaml
+	container-structure-test test \
+		--image $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MICRO) \
+		--config tests/config.yaml
 
 test-ci: ## Run CI pipeline locally
 	woodpecker-cli exec --local --repo-trusted-volumes=true --env=MODE_LOCAL=true			

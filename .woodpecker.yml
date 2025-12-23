@@ -17,12 +17,11 @@ steps:
   - name: test
     image: docker:dind
     commands:
-      - apk add make git
+      - apk add make git curl
+      - curl -Lo /usr/local/bin/container-structure-test https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 && chmod +x /usr/local/bin/container-structure-test
       - make test
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    when:
-      - evaluate: 'MODE_LOCAL != "true"'      
 
   - name: docker-push
     image: docker:dind
