@@ -8,11 +8,10 @@ ifeq ($(MODE_LOCAL),true)
 endif
 
 # Tools Version
-BATS_VERSION		:= 1.12.0
-CST_VERSION			:= 1.19.3
+CST_VERSION			:= 1.22.1
 
 # Docker-dind Version
-VERSION            := 28.2.2
+VERSION            := 29.1.3
 VERSION_PARTS      := $(subst ., ,$(VERSION))
 
 MAJOR              := $(word 1,$(VERSION_PARTS))
@@ -38,7 +37,6 @@ help: ## Show the Makefile help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 version: ## Show all versionning infos
-	@echo BATS_VERSION="$(BATS_VERSION)"
 	@echo CST_VERSION="$(CST_VERSION)"
 	@echo CURRENT_VERSION_MICRO="$(CURRENT_VERSION_MICRO)"
 	@echo CURRENT_VERSION_MINOR="$(CURRENT_VERSION_MINOR)"
@@ -49,7 +47,6 @@ version: ## Show all versionning infos
 
 build: ## Build the image form Dockerfile
 	docker build \
-		--build-arg BATS_VERSION=$(BATS_VERSION) \
 		--build-arg CST_VERSION=$(CST_VERSION) \
 		--build-arg DATE=$(DATE) \
 		--build-arg CURRENT_VERSION_MICRO=$(CURRENT_VERSION_MICRO) \

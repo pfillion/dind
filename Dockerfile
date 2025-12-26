@@ -10,7 +10,6 @@ ARG CURRENT_VERSION_MICRO
 ARG DATE
 ARG COMMIT
 ARG AUTHOR
-ARG BATS_VERSION
 
 LABEL \
     org.opencontainers.image.created=$DATE \
